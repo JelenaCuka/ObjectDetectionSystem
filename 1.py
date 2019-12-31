@@ -5,6 +5,18 @@ from typing import List, Tuple
 from ObjectDetector import ObjectDetector
 from tkinter import filedialog
 from Model import Model
+
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+# Implement the default Matplotlib key bindings.
+from matplotlib.backend_bases import key_press_handler
+from matplotlib.figure import Figure
+import numpy as np
+from PIL import Image
+from object_detection.utils import visualization_utils as vis_util
+from matplotlib import pyplot as plt
+
+
 class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -155,7 +167,6 @@ class PageOne(tk.Frame):
 
 
 
-
 class PageTwo(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -174,15 +185,52 @@ class PageTwo(tk.Frame):
         # TODO RUN IMAGE DETECTION ->CALL ->OD.DETECTFROMCAM ON INIT ->ON BACK PRESS STOP JE HEHE
         self.od = ObjectDetector()
 
-        #da se poziva kad se otvori!
-        #root = tk.Tk()
-        #root.withdraw()
-        #file_path = filedialog.askopenfilename()
-        #print(file_path)
-
-    def startDetecting(self):
-        print("startDetecting page1 cam")
         self.od.detectOcjectsFromImages()
+        self.refreshView()
+        #get images to draw
+
+    def refreshView(self):
+        print("refresh")
+        for image_path in self.od.TEST_IMAGE_PATHS:
+            image = Image.open(image_path)
+            # the array based representation of the image will be used later in order to prepare the
+            # result image with boxes and labels on it.
+            image_np = self.od.load_image_into_numpy_array(image)
+            # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+            image_np_expanded = np.expand_dims(image_np, axis=0)
+            # Actual detection.
+            output_dict = self.od.run_inference_for_single_image(image_np_expanded, self.od.detection_graph)
+            # Visualization of the results of a detection.
+            vis_util.visualize_boxes_and_labels_on_image_array(
+                image_np,
+                output_dict['detection_boxes'],
+                output_dict['detection_classes'],
+                output_dict['detection_scores'],
+                self.od.category_index,
+                instance_masks=output_dict.get('detection_masks'),
+                use_normalized_coordinates=True,
+                line_thickness=8)
+
+
+            #plt.figure(figsize=self.od.IMAGE_SIZE)
+            #plt.imshow(image_np)
+
+
+            #image = plt.imread('test_images/image1.jpg')
+            #fig = plt.figure(figsize=(5, 4))
+            fig = plt.figure(figsize=self.od.IMAGE_SIZE)
+            im = plt.imshow(image_np)
+            #im = plt.imshow(image)  # later use a.set_data(new_data)
+            ax = plt.gca()
+            ax.set_xticklabels([])
+            ax.set_yticklabels([])
+
+            # a tk.DrawingArea
+            canvas = FigureCanvasTkAgg(fig, master=self)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+
 
 if __name__ == "__main__":
     app = SampleApp()
