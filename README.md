@@ -81,6 +81,6 @@ Fix with adding slim to path -> from directory  /models/research$ export PYTHONP
 -----------------------------------------------------------------------------------------------------------------------------
 
 Main file for runing this system is 
-ObjectDetector.py
+ObjectDetectionSystem.py
 
 
