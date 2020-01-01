@@ -1,19 +1,25 @@
 # ObjectDetectionSystem
 Object Detection System.
 
-Detect objects from video or image.
+# Detect objects from video or image.
 
-Can use different models such as   ssd_inception_v2_coco_2018_01_28, faster_rcnn_inception_v2_coco_2018_01_28 and similar. 
+# Can use different models such as   ssd_inception_v2_coco_2018_01_28, faster_rcnn_inception_v2_coco_2018_01_28 and similar. 
+
 -----------------------------------------------------------------------------------------------------------------------------
 All used models are coco models which means they can detect classes such as :
 person,bicycle,car,motorcycle,airplane,bus,train,truck,boat,traffic light,fire hydrant,stop sign,parking meter,bench,bird, cat, dog, horse, sheep, cow, elephant, bear, zebra, giraffe, backpack, umbrella, handbag, tie, suitcase, frisbee, skis, snowboard, sports ball, kite, baseball bat, baseball glove, skateboard, surfboard, surfboard, tennis racket, bottle, wine glass, cup, fork, knife, spoon, bowl, banana, apple, sandwich, orange, broccoli, carrot, hot dog, pizza, donut, cake, chair, couch, potted plant, bed, dining table, toilet, tv, laptop, mouse, remote, keyboard, cell phone, microwave, oven, toaster, sink, refrigerator, book, clock, vase, scissors, teddy bear, hair drier and toothbrush. 
 The difference between models is accuracy and speed. 
 
-Custom built model for learning purposes can also be used in this system. It includes 3 objects:
+# Custom built model for learning purposes can also be used in this system. It includes 3 objects:
 (blue_duck originally "plava_patkica", CASIO_fx_991ES and CASIO_fx_991ES_PLUS). 
 -----------------------------------------------------------------------------------------------------------------------------
-Technologies: Tensorflow, Python, opencv, matplotlib.
+
+# Technologies: Tensorflow, Python, opencv, matplotlib.
+
 -----------------------------------------------------------------------------------------------------------------------------
+
+# Some configuration notes
+
 Since this is not buildable release version, I'll put here some configuration Tensorflow notes that might be helpful in future, that I used before creating project:
 
 cloning Tensorflow
