@@ -78,4 +78,9 @@ ModuleNotFoundError: No module named 'nets'
 means path is not configured well 
 Fix with adding slim to path -> from directory  /models/research$ export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+Main file for runing this system is 
+ObjectDetector.py
+
 
