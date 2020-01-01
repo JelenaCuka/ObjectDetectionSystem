@@ -11,7 +11,8 @@ person,bicycle,car,motorcycle,airplane,bus,train,truck,boat,traffic light,fire h
 The difference between models is accuracy and speed. 
 
 Custom built model for learning purposes can also be used in this system. It includes 3 objects:
-(blue_duck originally "plava_patkica", CASIO_fx_991ES and CASIO_fx_991ES_PLUS). 
+ (blue_duck originally "plava_patkica", CASIO_fx_991ES and CASIO_fx_991ES_PLUS). 
+ 
 -----------------------------------------------------------------------------------------------------------------------------
 
 Technologies: Tensorflow, Python, opencv, matplotlib.
@@ -70,6 +71,7 @@ pip install opencv-python==3.4.4.19
 Used version 1.14
 sudo python3 -m pip install tensorflow==1.14
 sudo python3 -m pip install tensorflow-gpu==1.14
+
 -----------------------------------------------------------------------------------------------------------------------------
 Following error 
 ModuleNotFoundError: No module named 'nets'
