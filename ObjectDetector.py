@@ -1,30 +1,16 @@
 from Model import Model
-
 import numpy as np
 import os
 import six.moves.urllib as urllib
-import sys
 import tarfile
 import tensorflow as tf
-import zipfile
 import cv2
 import os.path
 from os import path
-
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
 from PIL import Image, ImageFont
-# from utils import label_map_util
-# from utils import visualization_utils as vis_util
-# os.chdir( '/home/yellow/models/research/object_detection' )
-# import object_detection
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 from object_detection.utils import ops as utils_ops
-
-from os import listdir
-from os.path import isfile, join
 
 class ObjectDetector:
     def __init__(self):
@@ -50,9 +36,7 @@ class ObjectDetector:
         self.downloadModel()
 
     def downloadModel(self):
-        print("Downloading model...")
         # Download Model
-        # print("Is it File?" + str(path.isfile(self.PATH_TO_CKPT)))
         if path.isfile(self.PATH_TO_CKPT) != True:
             opener = urllib.request.URLopener()
             opener.retrieve(self.DOWNLOAD_BASE + self.MODEL_FILE, self.MODEL_FILE)
@@ -73,13 +57,11 @@ class ObjectDetector:
 
     def setCustomModelSettings(self):
         self.MODEL_NAME = '/home/yellow/models/research/object_detection/inference_graph'
-        self.PATH_TO_CKPT = self.MODEL_NAME + '/frozen_inference_graph.pb'  # isto?
-        self.PATH_TO_LABELS = os.path.join('training', 'labelmap.pbtxt')  # !!
+        self.PATH_TO_CKPT = self.MODEL_NAME + '/frozen_inference_graph.pb'  #
+        self.PATH_TO_LABELS = os.path.join('training', 'labelmap.pbtxt')  #
 
     def updateName(self):
-        # self.model = Model.getInstance()
         self.MODEL_NAME = self.model.get_name()
-        print("New value=" + self.MODEL_NAME)
 
     def loadLabelMap(self):
         # Loading label map
@@ -101,7 +83,6 @@ class ObjectDetector:
 
     def model_setup(self):
         if self.model.get_bool_custom_trained():
-            print("CUSTOM")
             self.setCustomModelSettings()
             self.configureModel()
         else:
@@ -110,12 +91,7 @@ class ObjectDetector:
             self.configureModel()
 
     def detectOcjectsFromCamera(self):
-        print("Detecting objects from camera")
         self.model_setup()
-
-        print(self.model.get_name())
-        print(self.model.get_bool_custom_trained())
-        print(self.MODEL_NAME)
 
         cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 
@@ -206,13 +182,8 @@ class ObjectDetector:
         return output_dict
 
     def detectOcjectsFromImages(self):
-        print("Detecting objects from image")
+        #just some setup, detection is run with method run_inference_for_single_image
         self.model_setup()
-
-        print(self.model.get_name())
-        print(self.model.get_bool_custom_trained())
-        print(self.MODEL_NAME)
-        #self.setImageSources()
         self.IMAGE_SIZE = (12, 8)
 
 
