@@ -14,7 +14,7 @@ from os import path
 from collections import defaultdict
 from io import StringIO
 from matplotlib import pyplot as plt
-from PIL import Image
+from PIL import Image, ImageFont
 # from utils import label_map_util
 # from utils import visualization_utils as vis_util
 # os.chdir( '/home/yellow/models/research/object_detection' )
@@ -28,6 +28,7 @@ from os.path import isfile, join
 
 class ObjectDetector:
     def __init__(self):
+        ImageFont.truetype('Arial.ttf', 30)
         self.model = Model.getInstance()
         #self.model.set_name("ssd_inception_v2_coco_2018_01_28")
         tf.config.optimizer.set_jit(True)
@@ -98,14 +99,7 @@ class ObjectDetector:
         return np.array(image.getdata()).reshape(
             (im_height, im_width, 3)).astype(np.uint8)
 
-    def detectOcjectsFromCamera(self):
-        print("Detecting objects from camera")
-        # Define the video stream
-        # self.model = Model()
-        # a = self.model.bool_custom_trained
-        # print(a)
-        # a = self.model._Model__bool_custom_trained
-        # print(a)
+    def model_setup(self):
         if self.model.get_bool_custom_trained():
             print("CUSTOM")
             self.setCustomModelSettings()
@@ -114,6 +108,10 @@ class ObjectDetector:
             self.updateName()
             self.downloadModel()
             self.configureModel()
+
+    def detectOcjectsFromCamera(self):
+        print("Detecting objects from camera")
+        self.model_setup()
 
         print(self.model.get_name())
         print(self.model.get_bool_custom_trained())
@@ -138,7 +136,7 @@ class ObjectDetector:
                     scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
                     # Extract detection classes
                     classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
-                    # Extract number of detectionsd
+                    # Extract number of detections
                     num_detections = self.detection_graph.get_tensor_by_name(
                         'num_detections:0')
                     # Actual detection.
@@ -166,7 +164,7 @@ class ObjectDetector:
         with graph.as_default():
             with tf.compat.v1.Session() as sess:
                 # Get handles to input and output tensors
-                ops = tf.get_default_graph().get_operations()
+                ops = tf.compat.v1.get_default_graph().get_operations()
                 all_tensor_names = {output.name for op in ops for output in op.outputs}
                 tensor_dict = {}
                 for key in [
@@ -175,7 +173,7 @@ class ObjectDetector:
                 ]:
                     tensor_name = key + ':0'
                     if tensor_name in all_tensor_names:
-                        tensor_dict[key] = tf.get_default_graph().get_tensor_by_name(
+                        tensor_dict[key] = tf.compat.v1.get_default_graph().get_tensor_by_name(
                             tensor_name)
                 if 'detection_masks' in tensor_dict:
                     # The following processing is only for single image
@@ -209,54 +207,12 @@ class ObjectDetector:
 
     def detectOcjectsFromImages(self):
         print("Detecting objects from image")
-        if self.model.get_bool_custom_trained():
-            print("CUSTOM")
-            self.setCustomModelSettings()
-            self.configureModel()
-        else:
-            self.updateName()
-            self.downloadModel()
-            self.configureModel()
+        self.model_setup()
 
-        self.setImageSources()
-        """for image_path in self.TEST_IMAGE_PATHS:
-            image = Image.open(image_path)
-            # the array based representation of the image will be used later in order to prepare the
-            # result image with boxes and labels on it.
-            image_np = self.load_image_into_numpy_array(image)
-            # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
-            image_np_expanded = np.expand_dims(image_np, axis=0)
-            # Actual detection.
-            output_dict = self.run_inference_for_single_image(image_np_expanded, self.detection_graph)
-            # Visualization of the results of a detection.
-            vis_util.visualize_boxes_and_labels_on_image_array(
-                image_np,
-                output_dict['detection_boxes'],
-                output_dict['detection_classes'],
-                output_dict['detection_scores'],
-                self.category_index,
-                instance_masks=output_dict.get('detection_masks'),
-                use_normalized_coordinates=True,
-                line_thickness=8)
-            plt.figure(figsize=self.IMAGE_SIZE)
-            plt.imshow(image_np)"""
-
-        #return plt
-
-
-    def setImageSources(self):
-        print("Setting IMG sources")
-        # For the sake of simplicity we will use only 2 images:
-        # image1.jpg
-        # image2.jpg
-        # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
-        self.PATH_TO_TEST_IMAGES_DIR = 'test_images'
-       # self.TEST_IMAGE_PATHS = [os.path.join(self.PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3)]
-        self.TEST_IMAGE_PATHS = [join(self.PATH_TO_TEST_IMAGES_DIR, f) for f in listdir(self.PATH_TO_TEST_IMAGES_DIR) if isfile(join(self.PATH_TO_TEST_IMAGES_DIR, f))]
-
-        for f in self.TEST_IMAGE_PATHS:
-            print(f)
-        # Size, in inches, of the output images.
+        print(self.model.get_name())
+        print(self.model.get_bool_custom_trained())
+        print(self.MODEL_NAME)
+        #self.setImageSources()
         self.IMAGE_SIZE = (12, 8)
 
 

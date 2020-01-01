@@ -1,0 +1,26 @@
+<annotation>
+	<folder>train</folder>
+	<filename>20191212_200008.jpg</filename>
+	<path>/home/yellow/models/research/object_detection/images/train/20191212_200008.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plava_patkica</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>417</xmin>
+			<ymin>231</ymin>
+			<xmax>680</xmax>
+			<ymax>423</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -2,6 +2,9 @@ import tkinter as tk  # python 3
 from tkinter import font  as tkfont  # python 3
 from tkinter import Frame
 from typing import List, Tuple
+
+from PIL.ImageFont import ImageFont
+
 from ObjectDetector import ObjectDetector
 from tkinter import filedialog
 from Model import Model
@@ -42,6 +45,8 @@ class SampleApp(tk.Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
+        #ImageFont.truetype('.Arial.ttf', 30)
+        #ImageFont.tru
 
         self.show_frame("StartPage")
 
@@ -62,8 +67,8 @@ class StartPage(tk.Frame):
         f = Frame(self, height=3, width=1000, bg="white")
         f.pack()
 
-        button1 = tk.Button(self, text="Camera Detection", command=lambda: self.openPageCamDetection(), padx=20, pady=10)
-        button2 = tk.Button(self, text="Image Detection", command=lambda: controller.show_frame("PageTwo"), padx=20, pady=10)
+        button1 = tk.Button(self, text="Camera Detection", command=lambda: self.openPageCamDetection(), width=60, padx=20, pady=10)
+        button2 = tk.Button(self, text="Image Detection", command=lambda: controller.show_frame("PageTwo"), width=60, padx=20, pady=10)
         button1.pack()
         button2.pack()
 
@@ -76,12 +81,13 @@ class StartPage(tk.Frame):
         v.set(1)  # initializing the choice, i.e. Python
 
         trainedModels: List[Tuple[str, int]] = [
-            ("ssd_inception_v2_coco_2018_01_28", 1),
-            ("faster_rcnn_inception_v2_coco_2018_01_28", 2),
+            ("faster_rcnn_inception_v2_coco_2018_01_28", 1),
+            ("ssd_inception_v2_coco_2018_01_28", 2),
             ("ssd_mobilenet_v2_coco_2018_03_29", 3),
             ("facessd_mobilenet_v2_quantized_320x320_open_image_v4", 4),
             ("intis_Model", 5)
         ]
+        #model = Model.getInstance().setName("faster_rcnn_inception_v2_coco_2018_01_28")
 
         def showChoice():
             #print(v.get())
@@ -112,28 +118,15 @@ class StartPage(tk.Frame):
             tk.Radiobutton(self,
                            text=name,
                            indicatoron=0,
-                           width=20,
+                           width=40,
                            padx=30,
                            pady=10,
                            variable=v,
                            command=showChoice,
                            value=index).pack(anchor=tk.CENTER)
+
         f.pack()
-        row = tk.Frame(self)
-        lab = tk.Label(row, width=22, text="Enter directory"+": ", anchor='w')
-        ent = tk.Entry(row)
-        ent.insert(0, "")
-        row.pack(side=tk.TOP,
-                 fill=tk.X,
-                 padx=5,
-                 pady=5)
-        lab.pack(side=tk.LEFT)
-        ent.pack(side=tk.RIGHT,
-                 expand=tk.YES,
-                 fill=tk.X)
-        f.pack()
-        print("Enter directory="+ent.get())
-       # entries[field] = ent
+
 
 
     def openPageCamDetection(self):
@@ -159,7 +152,7 @@ class PageOne(tk.Frame):
         f = Frame(self, height=3, width=1000, bg="white")
         f.pack()
         self.od = ObjectDetector()
-        #TODO RUN CAM DETECTION ->CALL ->OD.DETECTFROMCAM ON INIT ->ON BACK PRESS STOP JE HEHE
+
 
     def startDetecting(self):
         print("startDetecting page1 cam")
@@ -180,56 +173,79 @@ class PageTwo(tk.Frame):
         button = tk.Button(self, text="Return to main menu",
                            command=lambda: controller.show_frame("StartPage"), padx=20, pady=10)
         button.pack()
+        button2 = tk.Button(self, text="New image", command=lambda: self.detectObjectsImage(), padx=20,
+                            pady=10)
+        button2.pack()
         f = Frame(self, height=3, width=1000, bg="white")
         f.pack()
-        # TODO RUN IMAGE DETECTION ->CALL ->OD.DETECTFROMCAM ON INIT ->ON BACK PRESS STOP JE HEHE
+
+
+
         self.od = ObjectDetector()
-
         self.od.detectOcjectsFromImages()
-        self.refreshView()
-        #get images to draw
+        #self.refreshView()
 
-    def refreshView(self):
-        print("refresh")
-        for image_path in self.od.TEST_IMAGE_PATHS:
-            image = Image.open(image_path)
+
+    def detectObjectsImage(self):
+
+
+        #print(model.MODEL_NAME)
+        self.od = ObjectDetector()
+        self.od.detectOcjectsFromImages()
+
+        model = Model.getInstance()
+        print(model.get_name())
+        print(model.get_bool_custom_trained())
+
+        tk.Tk().withdraw()
+        self.file_path = filedialog.askopenfilename()
+        if self.file_path == "":
+            return
+        image = Image.open(self.file_path)
             # the array based representation of the image will be used later in order to prepare the
             # result image with boxes and labels on it.
-            image_np = self.od.load_image_into_numpy_array(image)
+        image_np = self.od.load_image_into_numpy_array(image)
             # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
-            image_np_expanded = np.expand_dims(image_np, axis=0)
+        image_np_expanded = np.expand_dims(image_np, axis=0)
             # Actual detection.
-            output_dict = self.od.run_inference_for_single_image(image_np_expanded, self.od.detection_graph)
+        output_dict = self.od.run_inference_for_single_image(image_np_expanded, self.od.detection_graph)
             # Visualization of the results of a detection.
-            vis_util.visualize_boxes_and_labels_on_image_array(
-                image_np,
-                output_dict['detection_boxes'],
-                output_dict['detection_classes'],
-                output_dict['detection_scores'],
-                self.od.category_index,
+        vis_util.visualize_boxes_and_labels_on_image_array(
+            image_np,
+            output_dict['detection_boxes'],
+            output_dict['detection_classes'],
+            output_dict['detection_scores'],
+            self.od.category_index,
                 instance_masks=output_dict.get('detection_masks'),
                 use_normalized_coordinates=True,
                 line_thickness=8)
 
 
-            #plt.figure(figsize=self.od.IMAGE_SIZE)
-            #plt.imshow(image_np)
+        plt.cla()
+        plt.clf()
+        plt.close(fig='all')
 
+        plt.close(plt.gcf())
+        plt.figure(clear=True)
+        fig = plt.figure(figsize=self.od.IMAGE_SIZE)
+        im = plt.imshow(image_np)
+        plt.minorticks_off()
+        ax = plt.gca()
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        #plt.show()
 
-            #image = plt.imread('test_images/image1.jpg')
-            #fig = plt.figure(figsize=(5, 4))
-            fig = plt.figure(figsize=self.od.IMAGE_SIZE)
-            im = plt.imshow(image_np)
-            #im = plt.imshow(image)  # later use a.set_data(new_data)
-            ax = plt.gca()
-            ax.set_xticklabels([])
-            ax.set_yticklabels([])
-
-            # a tk.DrawingArea
-            canvas = FigureCanvasTkAgg(fig, master=self)
-            canvas.draw()
-            canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
+        # a tk.DrawingArea
+        try:
+            self.canvas.get_tk_widget().pack_forget()
+        except AttributeError:
+            pass
+        f = Figure(figsize=(5, 1))
+        aplt = f.add_subplot(111)
+        aplt.plot([1, 2, 3, 4])
+        self.canvas = FigureCanvasTkAgg(fig, master=self)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 
 if __name__ == "__main__":

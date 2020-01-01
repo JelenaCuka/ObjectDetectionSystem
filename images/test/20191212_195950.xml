@@ -1,0 +1,26 @@
+<annotation>
+	<folder>test</folder>
+	<filename>20191212_195950.jpg</filename>
+	<path>/home/yellow/models/research/object_detection/images/test/20191212_195950.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>CASIO_fx_991ES_PLUS</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>205</xmin>
+			<ymin>125</ymin>
+			<xmax>708</xmax>
+			<ymax>392</ymax>
+		</bndbox>
+	</object>
+</annotation>
