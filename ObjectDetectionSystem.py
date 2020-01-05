@@ -78,7 +78,7 @@ class StartPage(tk.Frame):
             ("faster_rcnn_inception_v2_coco_2018_01_28", 1),
             ("ssd_inception_v2_coco_2018_01_28", 2),
             ("ssd_mobilenet_v2_coco_2018_03_29", 3),
-            ("facessd_mobilenet_v2_quantized_320x320_open_image_v4", 4),
+            ("mask_rcnn_inception_v2_coco_2018_01_28", 4),
             ("intis_Model", 5)
         ]
 
@@ -158,12 +158,12 @@ class PageTwo(tk.Frame):
 
 
         self.od = ObjectDetector()
-        self.od.detectOcjectsFromImages()
+        self.od.detectOcjectsFromImagesSetup()
 
 
     def detectObjectsImage(self):
         self.od = ObjectDetector()
-        self.od.detectOcjectsFromImages()
+        self.od.detectOcjectsFromImagesSetup()
 
         tk.Tk().withdraw()
         self.file_path = filedialog.askopenfilename()

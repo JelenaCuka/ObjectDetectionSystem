@@ -16,25 +16,10 @@ class ObjectDetector:
     def __init__(self):
         ImageFont.truetype('Arial.ttf', 30)
         self.model = Model.getInstance()
-        #self.model.set_name("ssd_inception_v2_coco_2018_01_28")
-        tf.config.optimizer.set_jit(True)
-        # What model to download.
-        # Models can bee found here: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md
-        self.MODEL_NAME = 'ssd_inception_v2_coco_2017_11_17'
-        self.MODEL_FILE = self.MODEL_NAME + '.tar.gz'
-        self.DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
+        self.model_setup()
+        #self.downloadModel()
 
-        # Path to frozen detection graph. This is the actual model that is used for the object detection.
-        self.PATH_TO_CKPT = self.MODEL_NAME + '/frozen_inference_graph.pb'
-
-        # List of the strings that is used to add correct label for each box.
-        self.PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
-
-        # Number of classes to detect
-        self.NUM_CLASSES = 90
-
-        self.downloadModel()
-
+    #unused method in current version
     def downloadModel(self):
         # Download Model
         if path.isfile(self.PATH_TO_CKPT) != True:
@@ -50,22 +35,27 @@ class ObjectDetector:
         self.detection_graph = tf.Graph()
         with self.detection_graph.as_default():
             od_graph_def = tf.compat.v1.GraphDef()
+            print(self.PATH_TO_CKPT)
             with tf.io.gfile.GFile(self.PATH_TO_CKPT, 'rb') as fid:
                 serialized_graph = fid.read()
                 od_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(od_graph_def, name='')
 
     def setCustomModelSettings(self):
-        self.MODEL_NAME = '/home/yellow/models/research/object_detection/inference_graph'
+        self.MODEL_NAME = '/home/yellow/models/research/object_detection/ODS/inference_graph'
         self.PATH_TO_CKPT = self.MODEL_NAME + '/frozen_inference_graph.pb'  #
         self.PATH_TO_LABELS = os.path.join('training', 'labelmap.pbtxt')  #
+        self.NUM_CLASSES = 5
 
     def updateName(self):
         self.MODEL_NAME = self.model.get_name()
+        self.PATH_TO_CKPT = 'models/'+ self.MODEL_NAME + '/frozen_inference_graph.pb'  #
+        self.MODEL_FILE = self.MODEL_NAME + '.tar.gz'
+        self.NUM_CLASSES = 90
+        self.PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
+        #self.DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 
     def loadLabelMap(self):
-        # Loading label map
-        # Label maps map indices to category names, so that when our convolution network predicts `5`, we know that this corresponds to `airplane`.  Here we use internal utility functions, but anything that returns a dictionary mapping integers to appropriate string labels would be fine
         self.label_map = label_map_util.load_labelmap("../" + self.PATH_TO_LABELS)
         self.categories = label_map_util.convert_label_map_to_categories(
             self.label_map, max_num_classes=self.NUM_CLASSES, use_display_name=True)
@@ -84,11 +74,10 @@ class ObjectDetector:
     def model_setup(self):
         if self.model.get_bool_custom_trained():
             self.setCustomModelSettings()
-            self.configureModel()
         else:
             self.updateName()
-            self.downloadModel()
-            self.configureModel()
+            #self.downloadModel()
+        self.configureModel()
 
     def detectOcjectsFromCamera(self):
         self.model_setup()
@@ -115,6 +104,7 @@ class ObjectDetector:
                     # Extract number of detections
                     num_detections = self.detection_graph.get_tensor_by_name(
                         'num_detections:0')
+
                     # Actual detection.
                     (boxes, scores, classes, num_detections) = sess.run(
                         [boxes, scores, classes, num_detections],
@@ -165,7 +155,8 @@ class ObjectDetector:
                     # Follow the convention by adding back the batch dimension
                     tensor_dict['detection_masks'] = tf.expand_dims(
                         detection_masks_reframed, 0)
-                image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
+                #image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
+                image_tensor = tf.compat.v1.get_default_graph().get_tensor_by_name('image_tensor:0')
 
                 # Run inference
                 output_dict = sess.run(tensor_dict,
@@ -181,7 +172,7 @@ class ObjectDetector:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def detectOcjectsFromImages(self):
+    def detectOcjectsFromImagesSetup(self):
         #just some setup, detection is run with method run_inference_for_single_image
         self.model_setup()
         self.IMAGE_SIZE = (12, 8)
