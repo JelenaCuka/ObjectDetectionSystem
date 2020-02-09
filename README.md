@@ -19,6 +19,28 @@ Technologies: Tensorflow, Python, opencv, matplotlib.
 
 -----------------------------------------------------------------------------------------------------------------------------
 
+# Example usage -demo
+-----------------------------------------------------------------------------------------------------------------------------
+
+Main screen - choosing detection model, choosing between video/image detection mode.
+![1](https://user-images.githubusercontent.com/26230313/74101454-3eae0600-4b3a-11ea-9c55-783c5f4247ec.PNG)
+
+Video detection examples
+
+![2](https://user-images.githubusercontent.com/26230313/74101468-7f0d8400-4b3a-11ea-8f59-ba9d2bb0d309.PNG)
+![3](https://user-images.githubusercontent.com/26230313/74101472-86cd2880-4b3a-11ea-85f5-e09ae10b90a7.PNG)
+
+Image detection examples
+![4](https://user-images.githubusercontent.com/26230313/74101477-964c7180-4b3a-11ea-9615-b826b3d45bd4.PNG)
+![5](https://user-images.githubusercontent.com/26230313/74101478-9a788f00-4b3a-11ea-82be-a9da57e6f541.PNG)
+
+Mask output model example
+![6](https://user-images.githubusercontent.com/26230313/74101488-a9f7d800-4b3a-11ea-80bd-e16c7d3a730a.PNG)
+
+Precision comparison on same image between models 
+![7](https://user-images.githubusercontent.com/26230313/74101509-dc093a00-4b3a-11ea-8d77-9096418a7bfe.PNG)
+-----------------------------------------------------------------------------------------------------------------------------
+
 # Some configuration notes
 
 Since this is not buildable release version, I'll put here some configuration Tensorflow notes that might be helpful in future, that I used before creating project:
