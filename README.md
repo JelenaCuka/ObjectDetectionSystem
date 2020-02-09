@@ -37,7 +37,7 @@ Image detection examples
 Mask output model example
 ![6](https://user-images.githubusercontent.com/26230313/74101488-a9f7d800-4b3a-11ea-80bd-e16c7d3a730a.PNG)
 
-Precision comparison on same image between models 
+Precision comparison on same image between different models 
 ![7](https://user-images.githubusercontent.com/26230313/74101509-dc093a00-4b3a-11ea-8d77-9096418a7bfe.PNG)
 -----------------------------------------------------------------------------------------------------------------------------
 
